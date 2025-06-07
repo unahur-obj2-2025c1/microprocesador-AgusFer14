@@ -2,24 +2,17 @@ package ar.edu.unahur.obj2.command.comandos;
 
 import ar.edu.unahur.obj2.command.Programable;
 
-public class LOD implements Operable{
+public class LOD extends Command{
 
-    private Integer direccion;
+    private Integer addr;
 
-    public LOD(Integer direccion) {
-        this.direccion = direccion;
+    public LOD(Integer addr) {
+        this.addr = addr;
     }
 
     @Override
-    public void execute(Programable micro) {
-        micro.setAcumuladorA(micro.getAddr(direccion));
-        micro.incProgramCounter();
-    }
-
-    @Override
-    public void undo(Programable micro) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'undo'");
+    public void doExecute(Programable micro) {
+        micro.setAcumuladorA(micro.getAddr(addr));
     }
     
 }

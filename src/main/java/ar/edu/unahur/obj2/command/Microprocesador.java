@@ -1,15 +1,20 @@
 package ar.edu.unahur.obj2.command;
 
+import java.util.Arrays;
 import java.util.List;
 
 import ar.edu.unahur.obj2.command.comandos.Operable;
+import ar.edu.unahur.obj2.command.excepctions.MicroException;
 
 public class Microprocesador implements Programable{
 
     private Integer AcumuladorA = 0;
     private Integer AcumuladorB = 0;
     private Integer PC = 0;
-    private Integer Datos = 0;
+    private static final Integer MIN_ADDR_VALUE = 0;
+    private static final Integer MAX_ADDR_VALUE = 1023;
+    List<Integer> addrs = Arrays.asList(new Integer[1024]);
+
 
     @Override
     public void run(List<Operable> operaciones) {
@@ -48,14 +53,18 @@ public class Microprocesador implements Programable{
 
     @Override
     public void copyFrom(Programable programable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'copyFrom'");
+        PC = programable.getProgramCounter();
+        AcumuladorA = programable.getAcumuladorA();
+        AcumuladorB = programable.getAcumuladorB();
     }
 
     @Override
     public Programable copy() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'copy'");
+        Microprocesador copia = new Microprocesador();
+        copia.PC = this.PC;
+        copia.AcumuladorA = this.AcumuladorA;
+        copia.AcumuladorB = this.AcumuladorB;
+        return copia;
     }
 
     @Override
@@ -63,25 +72,25 @@ public class Microprocesador implements Programable{
         AcumuladorA = 0;
         AcumuladorB = 0;
         PC = 0;
-        Datos = 0;
+        addrs = Arrays.asList(new Integer [1024]);
     }
 
-    private void validarDireccion(Integer addr) {
-        if(addr < 0 || addr >= 1023) {
-            throw new RuntimeException("Dirección fuera de rango: " + addr);
-        }
+    private Boolean estaEnRango(Integer addr) {
+        return addr >= MIN_ADDR_VALUE && addr <= MAX_ADDR_VALUE;
     }
 
     @Override
     public void setAddr(Integer addr) {
-        this.validarDireccion(addr);
-        Datos = AcumuladorA;
+        if(!estaEnRango(addr))
+            throw new IllegalArgumentException("La dirección de memoria no es válida");
+        addrs.set(addr, AcumuladorA);    
     }
 
     @Override
     public Integer getAddr(Integer addr) {
-        this.validarDireccion(addr);
-        return Datos;
+        if(!estaEnRango(addr))
+            throw new MicroException("La dirección de memoria no es válida");
+        return addrs.get(addr);
     }
 
 }

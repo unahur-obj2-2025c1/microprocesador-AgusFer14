@@ -2,21 +2,13 @@ package ar.edu.unahur.obj2.command.comandos;
 
 import ar.edu.unahur.obj2.command.Programable;
 
-public class SWAP implements Operable{
+public class SWAP extends Command{
 
     @Override
-    public void execute(Programable micro) {
-        Integer a = micro.getAcumuladorA();
-        Integer b = micro.getAcumuladorB();
-        micro.setAcumuladorA(b);
-        micro.setAcumuladorB(a);
-        micro.incProgramCounter();
-    }
-
-    @Override
-    public void undo(Programable micro) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'undo'");
+    public void doExecute(Programable micro) {
+        Integer buffer = micro.getAcumuladorA();
+        micro.setAcumuladorA(micro.getAcumuladorB());
+        micro.setAcumuladorB(buffer);
     }
     
 }
